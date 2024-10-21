@@ -218,7 +218,7 @@ Yang Q., Xue G., and Yu Y. "Boosting for transfer learning". In ICML, 2007.
         self : returns an instance of self
         """
         set_random_seed(self.random_state)
-        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+        # tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
         
         Xs, ys = check_arrays(X, y, accept_sparse=True)
         Xt, yt = self._get_target_data(Xt, yt)
@@ -320,7 +320,10 @@ Yang Q., Xue G., and Yu Y. "Boosting for transfer learning". In ICML, 2007.
         
         if not isinstance(self, TrAdaBoostR2):
             if isinstance(estimator, BaseEstimator):
-                ohe = OneHotEncoder(sparse=False)
+                try:
+                    ohe = OneHotEncoder(sparse=False)
+                except:
+                    ohe = OneHotEncoder(sparse_output=False)
                 ohe.fit(y.reshape(-1, 1))
                 ys = ohe.transform(ys)
                 yt = ohe.transform(yt)
@@ -757,9 +760,9 @@ class TwoStageTrAdaBoostR2(TrAdaBoostR2):
     --------
     >>> from sklearn.linear_model import Ridge
     >>> from adapt.utils import make_regression_da
-    >>> from adapt.instance_based import TrAdaBoostR2
+    >>> from adapt.instance_based import TwoStageTrAdaBoostR2
     >>> Xs, ys, Xt, yt = make_regression_da()
-    >>> model = TrAdaBoostR2(Ridge(), n_estimators=10, Xt=Xt[:10], yt=yt[:10], random_state=0)
+    >>> model = TwoStageTrAdaBoostR2(Ridge(), n_estimators=10, Xt=Xt[:10], yt=yt[:10], random_state=0)
     >>> model.fit(Xs, ys)
     Iteration 0 - Cross-validation score: 0.2956 (0.0905)
     Iteration 1 - Cross-validation score: 0.2956 (0.0905)
@@ -814,7 +817,7 @@ D. Pardoe and P. Stone. "Boosting for regression transfer". In ICML, 2010.
             sample_weight_tgt=None,
             **fit_params):
         set_random_seed(self.random_state)
-        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+        # tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
         
         Xs, ys = check_arrays(X, y, accept_sparse=True)
         Xt, yt = self._get_target_data(Xt, yt)
